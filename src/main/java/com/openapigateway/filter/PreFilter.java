@@ -19,8 +19,6 @@ public class PreFilter extends ZuulFilter {
         RequestContext ctx = RequestContext.getCurrentContext();
         HttpServletRequest request = ctx.getRequest();
 
-        log.debug("Request Method : " + request.getMethod());
-        log.debug("Request URL : " + request.getRequestURL().toString());
         log.info(String.format("%s request to %s", request.getMethod(), request.getRequestURL().toString()));
 
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
