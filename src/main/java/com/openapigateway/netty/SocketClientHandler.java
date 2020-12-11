@@ -7,34 +7,40 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
+@Data
 @Slf4j
-public class ClientHandler extends ChannelInboundHandlerAdapter {
+public class SocketClientHandler extends ChannelInboundHandlerAdapter {
 
     // 메시지 사이즈를 결정합니다.
-    static final int MESSAGE_SIZE = 256;
-
-    private final int COUNT_DOWN_LATCH_TIMEOUT = 8;
-
-//    private final TimeUnit COUNT_DOWN_LATCH_UNIT = TimeUnit.SECONDS;
-    private final TimeUnit COUNT_DOWN_LATCH_UNIT = TimeUnit.MILLISECONDS;
+    private final int MESSAGE_SIZE = 256;
 
     private final ByteBuf sendMessage;
+
+    private int countDownLatchTimeout;
+
+    private TimeUnit countDownLatchUnit;
 
     private byte[] recvByteMessage;
 
     // Because the request and response are one-to-one, the CountDownLatch value is initialized to 1.
     private CountDownLatch latch = new CountDownLatch(1);
 
+    private String serverId;
+
     // 초기화
-    public ClientHandler(String msg) {
-        sendMessage = Unpooled.buffer(MESSAGE_SIZE);
+    public SocketClientHandler(String serverId, String msg) {
+        this.serverId = serverId;
+
+        this.sendMessage = Unpooled.buffer(MESSAGE_SIZE);
+
         // 예제로 사용할 바이트 배열을 만듭니다.
         byte[] str = msg.getBytes();
-        // 예제 바이트 배열을 메시지에 씁니다.
-        sendMessage.writeBytes(str);
 
+        // 예제 바이트 배열을 메시지에 씁니다.
+        this.sendMessage.writeBytes(str);
     }
 
     // 채널이 활성화 되면 동작할 코드를 정의합니다.
@@ -68,16 +74,17 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
     }
 
     public String getRecvMessage() throws InterruptedException {
-        if (latch.await(COUNT_DOWN_LATCH_TIMEOUT, COUNT_DOWN_LATCH_UNIT)) {
-            System.out.println("getRecvMessage() 실행");
+        if (latch.await(countDownLatchTimeout, countDownLatchUnit)) {
+            log.debug("timeout 내에 응답");
 
             // 바이트를 String 형으로 변환합니다.
             String recvMessage = new String(recvByteMessage);
 
             return recvMessage;
         }
-
-        return null;
+        else {
+            throw new InterruptedException("timeout 발생");
+        }
     }
 
     @Override
@@ -88,7 +95,10 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        cause.printStackTrace();
+        // cause.printStackTrace();
+
+        log.debug("exception 발생");
+
         ctx.close();
     }
 }

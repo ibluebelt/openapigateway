@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<INTERFACE ID="LEGACY0001I0001" KIND="INBOUND">
+	<ID NAME="아이디" TYPE="Char" LENGTH="5"></ID>
+	<PW NAME="비밀번호" TYPE="String" LENGTH="30"></PW>
+</INTERFACE>

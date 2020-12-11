@@ -22,21 +22,21 @@ public class LEGACY0002Controller {
     @RequestMapping(value = "/LEGACY0002/", method = GET)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity getBalances() {
-        log.debug("getCredits {}", "start");
+        log.debug("getBalances {}", "start");
 
-        String credits = legacy0002Service.getBalances();
+        String balances = legacy0002Service.getBalances();
 
-        return new ResponseEntity<>(credits, HttpStatus.OK);
+        return new ResponseEntity<>(balances, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/LEGACY0002/{userId}", method = GET)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity getBalanceByPk(@PathVariable String userId) {
-        log.debug("getCreditByPk {} {}", "start", userId);
+        log.debug("getBalanceByPk {} {}", "start", userId);
 
-        String credits = legacy0002Service.getBalanceByPk(userId);
+        String balances = legacy0002Service.getBalanceByPk(userId);
 
-        return new ResponseEntity<>(credits, HttpStatus.OK);
+        return new ResponseEntity<>(balances, HttpStatus.OK);
     }
 
 }

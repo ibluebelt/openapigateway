@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,22 +22,25 @@ public class LEGACY0001Controller {
 
     @RequestMapping(value = "/LEGACY0001/", method = GET)
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity getCredits() {
-        log.debug("getCredits {}", "start");
+    public ResponseEntity getAccounts(@RequestParam("interfaceId") String interfaceId, @RequestParam("id") String id) {
+        log.debug("getAccounts {} {} {}", "start", interfaceId, id);
 
-        String credits = legacy0001Service.getCredits();
+        User user = new User();
+        user.setId(id);
+        
+        String accounts = legacy0001Service.getAccounts(interfaceId, user);
 
-        return new ResponseEntity<>(credits, HttpStatus.OK);
+        return new ResponseEntity<>(accounts, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/LEGACY0001/{userId}", method = GET)
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity getCreditByPk(@PathVariable String userId) {
-        log.debug("getCreditByPk {} {}", "start", userId);
+    public ResponseEntity getAccountsByPk(@PathVariable String userId) {
+        log.debug("getAccountsByPk {} {}", "start", userId);
 
-        String credits = legacy0001Service.getCreditByPk(userId);
+        String accounts = legacy0001Service.getAccountsByPk(userId);
 
-        return new ResponseEntity<>(credits, HttpStatus.OK);
+        return new ResponseEntity<>(accounts, HttpStatus.OK);
     }
 
 }

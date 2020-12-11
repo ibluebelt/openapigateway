@@ -3,9 +3,8 @@ package com.openapigateway.legacy0001;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.openapigateway.netty.ClientHandler;
-import com.openapigateway.netty.SocketConnectionPool;
-import com.openapigateway.properties.LegacyProperties;
+import com.openapigateway.netty.SocketClient;
+import com.openapigateway.netty.SocketClientHandler;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,38 +13,47 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LEGACY0001Service {
 
-    @Autowired
-    LegacyProperties legacyProperties;
+    private final String LEGACY_ID = "LEGACY0001";
 
     @Autowired
-    private SocketConnectionPool socketConnectionPool;
+    private SocketClient socketClient;
 
-    public String getCredits() {
-        log.debug("getCredits {}", "start");
+    public String getAccounts(String interfaceId, User user) {
+        log.debug("getAccounts {} {}", "start", user.toString());
+        String sendMsg = null;
+        String recvMsg = null;
+
+        // TODO parameter object 를 전문 string 으로 변경하는 간단한 방법 필요. charset 고려 필요
         
-        String ip = legacyProperties.getLegacy0001Ip();
-        int port = legacyProperties.getLegacy0001Port();
-        
-        ClientHandler clientHandler = new ClientHandler("abcefg");
-        socketConnectionPool.communicate(ip, port, clientHandler);
-        
-        
-        String recvMessage = null;
-        
+        sendMsg = "[" + LEGACY_ID + "]" + "[" + Thread.currentThread().getId() + "]";
+        log.debug(sendMsg);
+
+
+
+        SocketClientHandler clientHandler = new SocketClientHandler(LEGACY_ID, sendMsg);
+        socketClient.communicate(clientHandler);
         try {
-            recvMessage = clientHandler.getRecvMessage();
+            recvMsg = clientHandler.getRecvMessage();
+            log.debug(recvMsg + "[" + Thread.currentThread().getId() + "]");
         }
         catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            // TODO 적당한 TimeoutException 만들어야 함
+            throw new NullPointerException("서버 응답시간 초과하였습니다.");
         }
         
-        return recvMessage;
+        // TODO 전문 string 을 return object 로 변경하는 간단한 방법 필요. charset 고려 필요
+
+        
+        
+        
+        return recvMsg;
     }
 
-    public String getCreditByPk(String userId) {
-        log.debug("getCreditByPk {} {}", "start", userId);
+    public String getAccountsByPk(String userId) {
+        log.debug("getAccountsByPk {} {}", "start", userId);
 
-        return "LEGACY0001Service.getCreditByPk";
+        String interfaceId = "LEGACY0001IL0002";
+
+        return "LEGACY0001Service.getAccountsByPk";
     }
 }

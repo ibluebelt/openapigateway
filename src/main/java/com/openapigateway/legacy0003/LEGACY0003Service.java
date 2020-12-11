@@ -1,4 +1,4 @@
-package com.openapigateway.legacy0002;
+package com.openapigateway.legacy0003;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,15 +11,15 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 // @Transactional
 @Slf4j
-public class LEGACY0002Service {
+public class LEGACY0003Service {
 
-    private final String LEGACY_ID = "LEGACY0002";
+    private final String LEGACY_ID = "LEGACY0003";
 
     @Autowired
     private SocketClient socketClient;
 
-    public String getBalances() {
-        log.debug("getBalances {}", "start");
+    public String getCredits() {
+        log.debug("getCredits {}", "start");
         String sendMsg = null;
         String recvMsg = null;
 
@@ -40,9 +40,9 @@ public class LEGACY0002Service {
         return recvMsg;
     }
 
-    public String getBalanceByPk(String userId) {
-        log.debug("getBalanceByPk {} {}", "start", userId);
+    public String getCreditByPk(String userId) {
+        log.debug("getCreditByPk {} {}", "start", userId);
 
-        return "LEGACY0002Service.getBalanceByPk";
+        return "LEGACY0003Service.getCreditByPk";
     }
 }
